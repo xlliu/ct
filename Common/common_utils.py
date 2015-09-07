@@ -1,5 +1,5 @@
 # coding=utf-8
-
+from Common.CronUtil import croniter
 
 __author__ = 'huaruibang'
 import urllib2, urllib
@@ -113,4 +113,11 @@ class CommonUtils(object):
         today = datetime.today()
         t = (today.year, today.month, today.day, 0, 0, 0, 0, 0, 0)
         return int(time.mktime(t))
+
+    @staticmethod
+    def cronToNextTime(cronstr):
+        base = datetime.now()
+        itr = croniter(cronstr, base)
+        n1 = itr.get_next(datetime)
+        return n1.strftime('%Y-%m-%d %H:%M:%S')
 

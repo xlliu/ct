@@ -8,6 +8,7 @@ from flask import Flask,render_template
 
 from Dac.DataSource import controltower_database, controltower_database_read_1
 import scheduler
+from Common.common_utils import CommonUtils
 app = Flask(__name__)
 
 
@@ -30,7 +31,7 @@ def _db_close(exc):
 @app.route('/')
 def hello_world():
     return render_template('index.html')
-
+print(CommonUtils.cronToNextTime('50 20 * * *'))
 scheduler.reStart()
 
 if __name__ == '__main__':
