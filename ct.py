@@ -25,8 +25,16 @@ def _db_close(exc):
 
 @app.route('/')
 def hello_world():
+    print 'b'
     return render_template('index.html')
+
+@app.route('/detail')
+def getDeatil():
+    print 'a'
+    return render_template('detail.html')
+
+
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
