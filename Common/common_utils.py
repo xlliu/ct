@@ -116,6 +116,7 @@ class CommonUtils(object):
 
     @staticmethod
     def cronToNextTime(cronstr):
+        cronstr = cronstr.strip()
         base = datetime.now()
         itr = croniter(cronstr, base)
         n1 = itr.get_next(datetime)

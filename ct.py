@@ -31,7 +31,7 @@ def _db_close(exc):
 @app.route('/')
 def hello_world():
     return render_template('index.html')
-print(CommonUtils.cronToNextTime('50 20 * * *'))
+print(CommonUtils.cronToNextTime(' */9  20 * * *'))
 scheduler.reStart()
 
 if __name__ == '__main__':
