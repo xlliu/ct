@@ -18,7 +18,6 @@ app = Flask(__name__)
 @app.teardown_request
 def _db_close(exc):
     '''
-    鍏抽棴mysql鏉冮檺
     :param exc:
     :return:
     '''
@@ -31,7 +30,8 @@ def _db_close(exc):
 @app.route('/')
 def hello_world():
     return render_template('index.html')
-print(CommonUtils.cronToNextTime(' */9  20 * * *'))
+
+
 scheduler.reStart()
 
 if __name__ == '__main__':
