@@ -22,12 +22,22 @@ scheduler = BackgroundScheduler({
 
 jobs={}
 def reStart():
+    """
+    重启整个scheduler
+    :return:
+    """
     dbjobs = Job.select().where(Job.status==1)
     for dbjob in dbjobs:
         addJob(dbjob)
     scheduler.start()
 
+
 def reMoveJob(id):
+    """
+    关闭和删除job
+    :param id:
+    :return:
+    """
     id=str(id)
     if scheduler.get_job(id):
         jobs.pop(id)
@@ -36,12 +46,13 @@ def reMoveJob(id):
 
 def addJob(item):
     """
-
+    增加/开启job
     :param item:
     :return:
     """
-    jobs[item.id]=item
-    scheduler.add_job(_job(item), 'cron',id=str(item.id), **getCron(item.cron))
+    if item.status=='1':
+        jobs[item.id]=item
+        scheduler.add_job(_job(item), 'cron',id=str(item.id), **getCron(item.cron))
 
 
 def _job(item):
@@ -53,7 +64,7 @@ def _job(item):
         # 修改任务状态为 开始运行
         Job.update(lastbegin = begin,lastend =0,lastresult = 3).where(Job.id==item.id).execute()
         try:
-            child=subprocess.Popen(item.command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            child=subprocess.Popen(item.command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             stdout, stderr=child.communicate()
             print(stdout)
             print(stderr)

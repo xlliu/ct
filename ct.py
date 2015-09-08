@@ -1,10 +1,12 @@
 #!flask/bin/python
 #-*- coding: utf-8 -*-
 import sys
+import subprocess
+import requesthandler
 
 reload(sys)
 sys.setdefaultencoding('utf8')
-from flask import Flask,render_template
+from flask import Flask
 
 from Dac.DataSource import controltower_database, controltower_database_read_1
 import scheduler
@@ -12,7 +14,7 @@ from Common.common_utils import CommonUtils
 app = Flask(__name__)
 
 
-
+requesthandler.init(app)
 
 
 @app.teardown_request
@@ -27,12 +29,10 @@ def _db_close(exc):
         controltower_database_read_1.close()
 
 
-@app.route('/')
-def hello_world():
-    return render_template('index.html')
+
 
 
 scheduler.reStart()
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

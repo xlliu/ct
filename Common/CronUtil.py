@@ -393,9 +393,6 @@ class croniter(object):
             return False
 
 
-
-
-
 if __name__ == '__main__':
 
     base = datetime.datetime(2010, 1, 25)

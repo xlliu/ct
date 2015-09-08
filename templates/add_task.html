@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="page-wrapper" style="margin-left:auto;margin-right:auto;width: 1200px">
+    <form action="" method="post">
+        <div class="form-group">
+            <label  style="margin-top: 15px">Task Name</label>
+            <input name="tname" class="form-control">
+        </div>
+        <label>Status:</label>
+        <div class="radio">
+            <label>
+                <input type="radio" name="status" id="optionsRadios1" value="1" checked="">开启
+            </label>
+            <label>
+                <input type="radio" name="status" id="optionsRadios2" value="0">关闭
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Command</label>
+            <input name="command" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Cron</label>
+            <input name="cron" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-default" style="float:right;width:100px;height:45px">Add Task</button>
+    </form>
+</div>
+{% endblock %}

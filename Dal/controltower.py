@@ -17,6 +17,7 @@ class BaseModel(Model):
 
 class Job(BaseModel):
     command = CharField()
+    name = CharField()
     cron = CharField()
     lastbegin = IntegerField()
     lastend = IntegerField()
