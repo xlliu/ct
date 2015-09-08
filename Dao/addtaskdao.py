@@ -8,5 +8,5 @@ __author__ = 'xlliu'
 class AddTaskDao(object):
 
     def addTask(self, name, status, command, cron):
-        i = Job.create(name=name, status=status, command=command, cron=cron)
-        return i
+        i = Job.insert(name=name, status=status, command=command, cron=cron)
+        i.execute()

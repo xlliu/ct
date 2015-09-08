@@ -1,7 +1,6 @@
 #!flask/bin/python
 #-*- coding: utf-8 -*-
 import sys
-import subprocess
 import requesthandler
 
 reload(sys)
@@ -20,6 +19,7 @@ requesthandler.init(app)
 @app.teardown_request
 def _db_close(exc):
     '''
+    鍏抽棴mysql鏉冮檺
     :param exc:
     :return:
     '''
@@ -30,8 +30,7 @@ def _db_close(exc):
 
 
 
-
-
+print(CommonUtils.cronToNextTime(' */9  20 * * *'))
 scheduler.reStart()
 
 if __name__ == '__main__':

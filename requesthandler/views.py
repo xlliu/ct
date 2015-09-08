@@ -5,10 +5,10 @@ from flask.views import MethodView
 from werkzeug.utils import redirect
 from Dao.addtaskdao import AddTaskDao
 from Dao.indexdao import IndexDao
+from Dao.showlogdao import ShowLogDao
 from Dao.taskdetaildao import TaskDetailDao
 
 __author__ = 'xlliu'
-import scheduler
 
 
 class GetIndex(MethodView):
@@ -34,8 +34,7 @@ class GetAddTask(MethodView):
         status = request.form.get('status')
         command = request.form.get('command')
         cron = request.form.get('cron')
-        job = AddTaskDao().addTask(name=name, status=status, command=command, cron=cron)
-        scheduler.addJob(job)
+        AddTaskDao().addTask(name=name, status=status, command=command, cron=cron)
         return redirect(url_for('/'))
 
 class GetTaskDeatil(MethodView):
@@ -60,3 +59,9 @@ class DeleteTask(MethodView):
         id = int(request.args.get('id'))
         IndexDao().del_task(id)
         return redirect(url_for('/'))
+
+class ShowLog(MethodView):
+
+    def get(self):
+        data = ShowLogDao().showLog()
+        return render_template('show_log.html', data=data)

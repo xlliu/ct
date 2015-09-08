@@ -24,7 +24,7 @@ class IndexDao(object):
             if r == '2':
                 d.lastresult = '失败'
             if r == '3':
-                d['lastresult'] = '运行中'
+                d.lastresult = '运行中'
             if begin:
                 x = time.localtime(begin)
                 d.lastbegin = time.strftime('%Y-%m-%d %H:%M:%S', x)
