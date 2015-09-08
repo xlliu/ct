@@ -49,6 +49,7 @@ def addJob(item):
     增加/开启job
     :param item:
     :return:
+    todo 是否已经存在了
     """
     if item.status=='1':
         jobs[item.id]=item
@@ -66,8 +67,7 @@ def _job(item):
         try:
             child=subprocess.Popen(item.command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             stdout, stderr=child.communicate()
-            print(stdout)
-            print(stderr)
+
         except Exception,ex:
             stderr = traceback.format_exc()
 
