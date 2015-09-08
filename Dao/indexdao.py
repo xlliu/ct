@@ -2,11 +2,12 @@
 #-*- coding: utf-8 -*-
 import time
 from Dal.controltower import Job
+from Dao.taskbase import TaskBase
 
 __author__ = 'xlliu'
 
 
-class IndexDao(object):
+class IndexDao(TaskBase):
 
     def taskList(self):
         data = Job.select()
@@ -35,7 +36,8 @@ class IndexDao(object):
 
     def del_task(self, id):
         if id:
-            d = Job.delete().where(Job.id == id)
-            d.execute()
+            Job.delete().where(Job.id == id).execute()
+            self.delTaskRun(id)
+
 
 

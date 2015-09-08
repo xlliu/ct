@@ -2,10 +2,12 @@
 #-*- coding: utf-8 -*-
 import time
 from Dal.controltower import Job
+from Dao.taskbase import TaskBase
 
 __author__ = 'xlliu'
 
-class TaskDetailDao(object):
+
+class TaskDetailDao(TaskBase):
 
     def find_one(self, id):
         data = Job.select().where(Job.id == id)
@@ -34,5 +36,5 @@ class TaskDetailDao(object):
 
     def update_task(self, id, name, status, command, cron):
         if id:
-            u = Job.update(name=name, status=status, command=command, cron=cron).where(Job.id == id)
-            u.execute()
+            Job.update(name=name, status=status, command=command, cron=cron).where(Job.id == id).execute()
+            self.updateTaskRun(id)

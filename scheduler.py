@@ -22,27 +22,50 @@ scheduler = BackgroundScheduler({
 
 jobs={}
 def reStart():
+    """
+    重启整个scheduler
+    :return:
+    """
     dbjobs = Job.select().where(Job.status==1)
     for dbjob in dbjobs:
         addJob(dbjob)
     scheduler.start()
 
+
 def reMoveJob(id):
-    id=str(id)
-    if scheduler.get_job(id):
-        jobs.pop(id)
-        scheduler.remove_job(id)
+    """
+    关闭和删除job
+    :param id:
+    :return:
+    """
+    if id in jobs:
+        id=str(id)
+        if scheduler.get_job(id):
+            jobs.pop(int(id))
+            scheduler.remove_job(id)
+    else:
+        print 'del列队中无此任务，无需移除'
 
 
 def addJob(item):
     """
-
+    增加/开启job
     :param item:
     :return:
+    todo 是否已经存在了
     """
-    jobs[item.id]=item
-    scheduler.add_job(_job(item), 'cron',id=str(item.id), **getCron(item.cron))
-
+    if item.status=='1':
+        if item.id not in jobs:
+            jobs[item.id]=item.id
+            print 'jobs:%s'%str(jobs)
+            scheduler.add_job(_job(item), 'cron',id=str(item.id), **getCron(item.cron))
+        else:
+            print 'add updata列队里已经有此任务，不需要添加'
+    else:
+        if item.id in jobs:
+            reMoveJob(item.id)
+        else:
+            print 'add updata列队中无此任务，不需要移除'
 
 def _job(item):
     def _privatejob():
@@ -53,10 +76,9 @@ def _job(item):
         # 修改任务状态为 开始运行
         Job.update(lastbegin = begin,lastend =0,lastresult = 3).where(Job.id==item.id).execute()
         try:
-            child=subprocess.Popen(item.command,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            child=subprocess.Popen(item.command,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             stdout, stderr=child.communicate()
-            print(stdout)
-            print(stderr)
+
         except Exception,ex:
             stderr = traceback.format_exc()
 
