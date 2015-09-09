@@ -70,7 +70,7 @@ def addJob(item):
     todo 是否已经存在了
     """
     if item.status=='1':
-        if item.id not in jobs:
+        if not scheduler.get_job(str(item.id)):
             jobs[item.id]=item.id
             scheduler.add_job(_job(item), 'cron',id=str(item.id), **getCron(item.cron))
 
@@ -79,7 +79,7 @@ def addJob(item):
         #     scheduler.add_job(_job(str(item.id)), 'cron',id=str(item.id), **getCron(item.cron))
         else:
             if str(item.id) in jobs and jobs[str(item.id)].cron.strip()!=item.cron.strip():
-                jobs[str(item.id)]=item
+                jobs[str(item.id)]=item.id
                 scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
             else:
                 print 'add updata列队里已经有此任务，不需要添加'
@@ -90,13 +90,13 @@ def addJob(item):
         else:
             print 'add updata列队中无此任务，不需要移除'
 
-def _job(id):
+def _job(item):
     def run():
         stdout=''
         stderr=''
         begin = CommonUtils.get_unixtime()
         result = 1
-        item = jobs[id]
+        # item = jobs[id]
         # 修改任务状态为 开始运行
         Job.update(lastbegin = begin,lastend =0,lastresult = 3).where(Job.id==item.id).execute()
         try:
