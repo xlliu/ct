@@ -41,8 +41,9 @@
                                             <td>{{ d.lastend }}</td>
                                             <td>{{ d.command }}</td>
                                             <td>{{ d.cron }}</td>
-                                            <td>--</td>
+                                            <td>{{ d.nextruntime }}</td>
                                             <td align="center">
+                                                <a href="/get_log?id={{ d.id }}" class="btn btn-default" style="width:66px;height:34px">日志</a>
                                                 <a href="/task_detail?id={{ d.id }}" class="btn btn-default" style="width:66px;height:34px">详情</a>
                                                 <a href="/delete_task?id={{ d.id }}" class="btn btn-default" style="width:66px;height:34px">删除</a>
                                             </td>

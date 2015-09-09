@@ -1,6 +1,6 @@
 #!flask/bin/python
 #-*- coding: utf-8 -*-
-from requesthandler.views import GetIndex, GetDeatil, GetAddTask, GetTaskDeatil, DeleteTask, ShowLog
+from requesthandler.views import GetIndex, GetDeatil, GetAddTask, GetTaskDeatil, DeleteTask, ShowLog, GetLog
 
 __author__ = 'xlliu'
 
@@ -11,3 +11,4 @@ def init(app):
     app.add_url_rule("/task_detail", view_func=GetTaskDeatil.as_view('task_detail'))
     app.add_url_rule("/delete_task", view_func=DeleteTask.as_view('delete_task'))
     app.add_url_rule("/show_log", view_func=ShowLog.as_view('show_log'))
+    app.add_url_rule("/get_log", view_func=GetLog.as_view('git_loGetLogg'))
