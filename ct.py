@@ -1,10 +1,11 @@
 #!flask/bin/python
 #-*- coding: utf-8 -*-
 import sys
-import requesthandler
+
 
 reload(sys)
 sys.setdefaultencoding('utf8')
+import requesthandler
 from flask import Flask
 
 from Dac.DataSource import controltower_database, controltower_database_read_1
@@ -30,7 +31,7 @@ def _db_close(exc):
 
 
 
-print(CommonUtils.cronToNextTime(' */9  20 * * *'))
+
 scheduler.reStart()
 
 if __name__ == '__main__':
