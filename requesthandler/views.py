@@ -3,6 +3,7 @@
 from flask import render_template, request, url_for
 from flask.views import MethodView
 from werkzeug.utils import redirect
+from Common.common_utils import CommonUtils
 from Dao.addtaskdao import AddTaskDao
 from Dao.indexdao import IndexDao
 from Dao.showlogdao import ShowLogDao
@@ -15,6 +16,9 @@ class GetIndex(MethodView):
 
     def get(self):
         data = IndexDao().taskList()
+        for d in data:
+            c = d.cron
+            d.nextruntime = CommonUtils.cronToNextTime(c)
         return render_template('index.html', data=data)
 
 
@@ -63,5 +67,12 @@ class DeleteTask(MethodView):
 class ShowLog(MethodView):
 
     def get(self):
-        data = ShowLogDao().showLog()
+        data = ShowLogDao().showLog(None)
+        return render_template('show_log.html', data=data)
+
+class GetLog(MethodView):
+
+    def get(self):
+        id = request.args.get('id')
+        data = ShowLogDao().showLog(id)
         return render_template('show_log.html', data=data)

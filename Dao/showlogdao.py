@@ -8,8 +8,11 @@ __author__ = 'xlliu'
 
 class ShowLogDao(object):
 
-    def showLog(self):
-        data = Log.select(Log, Job).join(Job, on=(Log.job == Job.id).alias('jobresult')).order_by(Log.begin.desc()).limit(29)
+    def showLog(self, id):
+        if id:
+            data = Log.select(Log, Job).join(Job, on=(Log.job == Job.id).alias('jobresult')).where(Job.id==id).order_by(Log.begin.desc()).limit(29)
+        else:
+            data = Log.select(Log, Job).join(Job, on=(Log.job == Job.id).alias('jobresult')).order_by(Log.begin.desc()).limit(29)
         for d in data:
             s = d.jobresult.status
             r = d.result
