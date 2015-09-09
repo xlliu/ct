@@ -1,12 +1,9 @@
 # encoding=utf-8
-<<<<<<< HEAD
 import sys
 
 reload(sys)
 sys.setdefaultencoding('utf8')
-=======
 from apscheduler.events import EVENT_ALL, EVENT_SCHEDULER_START
->>>>>>> e85a77b4a12d49f1e978086eb35319c702d4a175
 from Dal.controltower import Job, Log
 
 __author__ = 'zhangjinglei'
