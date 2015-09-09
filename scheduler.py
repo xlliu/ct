@@ -1,4 +1,8 @@
 # encoding=utf-8
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 from Dal.controltower import Job, Log
 
 __author__ = 'zhangjinglei'
@@ -57,7 +61,6 @@ def addJob(item):
     if item.status=='1':
         if item.id not in jobs:
             jobs[item.id]=item.id
-            print 'jobs:%s'%str(jobs)
             scheduler.add_job(_job(item), 'cron',id=str(item.id), **getCron(item.cron))
         else:
             print 'add updata列队里已经有此任务，不需要添加'

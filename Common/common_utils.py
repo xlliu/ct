@@ -122,3 +122,7 @@ class CommonUtils(object):
         n1 = itr.get_next(datetime)
         return n1.strftime('%Y-%m-%d %H:%M:%S')
 
+    @staticmethod
+    def cronStr(cronlist):
+        cron = ''.join([c+" " for c in cronlist]).rstrip()
+        return cron

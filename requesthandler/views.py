@@ -37,7 +37,13 @@ class GetAddTask(MethodView):
         name = request.form.get('tname')
         status = request.form.get('status')
         command = request.form.get('command')
-        cron = request.form.get('cron')
+        cronlist = []
+        cronlist.append(request.form.get('cron1'))
+        cronlist.append(request.form.get('cron2'))
+        cronlist.append(request.form.get('cron3'))
+        cronlist.append(request.form.get('cron4'))
+        cronlist.append(request.form.get('cron5'))
+        cron = CommonUtils.cronStr(cronlist)
         AddTaskDao().addTask(name=name, status=status, command=command, cron=cron)
         return redirect(url_for('/'))
 
@@ -46,6 +52,8 @@ class GetTaskDeatil(MethodView):
     def get(self):
         id = int(request.args.get('id'))
         data = TaskDetailDao().find_one(id)
+        data[0].cron = data[0].cron.split()
+
         return render_template('task_detail.html', data=data)
 
     def post(self):
@@ -53,7 +61,13 @@ class GetTaskDeatil(MethodView):
         name = request.form.get('tname')
         status = request.form.get('status')
         command = request.form.get('command')
-        cron = request.form.get('cron')
+        cronlist = []
+        cronlist.append(request.form.get('cron1'))
+        cronlist.append(request.form.get('cron2'))
+        cronlist.append(request.form.get('cron3'))
+        cronlist.append(request.form.get('cron4'))
+        cronlist.append(request.form.get('cron5'))
+        cron = CommonUtils.cronStr(cronlist)
         TaskDetailDao().update_task(id=id, name=name, status=status, command=command, cron=cron )
         return redirect(url_for('/'))
 
@@ -76,3 +90,4 @@ class GetLog(MethodView):
         id = request.args.get('id')
         data = ShowLogDao().showLog(id)
         return render_template('show_log.html', data=data)
+
