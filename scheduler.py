@@ -1,4 +1,5 @@
-# encoding=utf-8
+#!flask/bin/python
+#-*- coding: utf-8 -*-
 import sys
 
 reload(sys)
@@ -75,15 +76,14 @@ def addJob(item):
     """
     if item.status == '1':
         if not scheduler.get_job(str(item.id)):
-            jobs[item.id] = item.id
+            jobs[str(item.id)] = item.id
             scheduler.add_job(_job(item), 'cron', id=str(item.id), **getCron(item.cron))
 
         # if not scheduler.get_job(str(item.id)):
         #     jobs[str(item.id)]=item
         #     scheduler.add_job(_job(str(item.id)), 'cron',id=str(item.id), **getCron(item.cron))
         else:
-            if str(item.id) in jobs and jobs[str(item.id)].cron.strip() != item.cron.strip():
-                jobs[str(item.id)] = item.id
+            if str(item.id) in jobs:
                 scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
             else:
                 print 'add updata列队里已经有此任务，不需要添加'
