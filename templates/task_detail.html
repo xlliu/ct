@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
     {% set id = request.args.get('id') %}
-    <div id="page-wrapper" style="margin-left:auto;margin-right:auto;width: 1200px">
+    <div id="page-wrapper" style="margin-left:auto;margin-right:auto;width: 1200px; height: 600px;">
+
         <form action="/task_detail" method="post">
+        <div style="margin-left: auto;margin-right: auto;width: 1000px; height: auto;">
+        <div style="width: 700px;float: left;">
+
             <input type="hidden" name="id" value={{ id }}>
 
             <div class="form-group">
-                <label style="margin-top: 15px">Task Name</label>
-                <input name="tname" class="form-control" value="{{ data[0].name }}">
+                <label style="margin-top: 15px">任务名称
+                <input name="tname" class="form-control" value="{{ data[0].name }}" style="width: 450px;"></label>
             </div>
-            <label>Status:</label>
+            <label>状态:</label>
 
             <div class="radio">
                 <label>
@@ -22,34 +26,65 @@
                 </label>
             </div>
             <div class="form-group">
-                <label>Command</label>
-                <input name="command" class="form-control" value="{{ data[0].command }}">
+                <label>执行路径
+                <input name="command" class="form-control" value="{{ data[0].command }}" style="width: 450px"></label>
             </div>
-            <div class="form-group">
-                <label>Cron</label>
-                <input name="cron" class="form-control" style="width:176px" value="{{ data[0].cron }}">
+            <div class="form-group" style="width: auto;height:60px">
+                <div style="float: left;">
+                    <label>分<input name="cron1" class="form-control" style="width:80px" value="{{ data[0].cron[0] }}"></label>
+                </div>
+                <div style="float: left;margin-left: 20px;">
+                    <label>时<input name="cron2" class="form-control" style="width:80px" value="{{ data[0].cron[1] }}"></label>
+                </div>
+                <div style="float: left;margin-left: 20px;">
+                    <label>天<input name="cron3" class="form-control" style="width:80px" value="{{ data[0].cron[2] }}"></label>
+                </div>
+                <div style="float: left;margin-left: 20px;">
+                    <label>月<input name="cron4" class="form-control" style="width:80px" value="{{ data[0].cron[3] }}"></label>
+                </div>
+                <div style="float: left;margin-left: 20px;">
+                    <label>周<input name="cron5" class="form-control" style="width:80px" value="{{ data[0].cron[4] }}"></label>
+                </div>
             </div>
             <div>
-                <div class="form-group" style="float: left">
-                    <label for="disabledSelect">LastBeginRunTime</label>
-                    <input class="form-control" id="lastbegin" type="text" placeholder="{{ data[0].lastbegin }}"
-                           disabled="" style="width:176px">
-                </div>
-                <div class="form-group" style="float: left;margin-left: 20px">
-                    <label for="disabledSelect">LastEndRunTime</label>
-                    <input class="form-control" id="lastend" type="text" placeholder="{{ data[0].lastend }}" disabled=""
-                           style="width:176px">
-                </div>
-                <div class="form-group" style="float: left;margin-left: 20px">
-                    <label for="disabledSelect">LastRunResult</label>
-                    <input class="form-control" id="lastresult" type="text" placeholder="{{ data[0].lastresult }}"
-                           disabled="" style="width:176px">
-                </div>
+                <div><label>手机号码<input type="text" class="form-control" id="photonum" name="photonum" style="width: 450px;"></label></div>
+            </div>
+            <div>
+                <label>邮箱<input type="text" class="form-control" id="photonum" style="width: 450px"></label>
+            </div>
+            <div class="form-group">
+                <label>错误关键字<input type="text" class="form-control" id="photonum" style="width: 176px;"></label>
             </div>
             <div>
                 <button type="submit" class="btn btn-default" style="float:right;width:100px;height:45px">Update
                 </button>
             </div>
+        </div>
+        <div style="width: 300px;float: right;">
+            <div class="form-group" style="height: 60px;width: auto;">
+                <div class="form-group" style="float: right;">
+                <label for="disabledSelect">运行时间<input type="text" class="form-control" id="photonum" placeholder="{{ data[0].runtime }}" disabled="" style="width:176px"></label>
+                </div>
+                <div class="form-group" style="float: right">
+                    <label for="disabledSelect">最后执行开始时间</label>
+                    <input class="form-control" id="lastbegin" type="text" placeholder="{{ data[0].lastbegin }}"
+                           disabled="" style="width:176px">
+                </div>
+                <div class="form-group" style="float: right">
+                    <label for="disabledSelect">最后执行结束时间</label>
+                    <input class="form-control" id="lastend" type="text" placeholder="{{ data[0].lastend }}" disabled=""
+                           style="width:176px">
+                </div>
+                <div class="form-group" style="float: right">
+                    <label for="disabledSelect">运行结果</label>
+                    <input class="form-control" id="lastresult" type="text" placeholder="{{ data[0].lastresult }}"
+                           disabled="" style="width:176px">
+                </div>
+                <br>
+            </div>
+        </div>
+        </div>
         </form>
+
     </div>
 {% endblock %}

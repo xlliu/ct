@@ -23,6 +23,10 @@ class Job(BaseModel):
     lastend = IntegerField()
     lastresult = CharField()
     status = CharField()
+    photonum = CharField()
+    email = CharField()
+    errorkey = CharField()
+    runtime = IntegerField()
 
     class Meta:
         db_table = 'job'
