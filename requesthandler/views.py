@@ -11,6 +11,7 @@ from Dao.taskdetaildao import TaskDetailDao
 
 __author__ = 'xlliu'
 
+import scheduler
 
 class GetIndex(MethodView):
 
@@ -19,7 +20,10 @@ class GetIndex(MethodView):
         for d in data:
             c = d.cron
             d.nextruntime = CommonUtils.cronToNextTime(c)
-        return render_template('index.html', data=data)
+        js=[]
+        for j in scheduler.jobs:
+            js.append({"id":j,"cron":scheduler.jobs[j]["cron"],"cmd":scheduler.jobs[j]["command"]})
+        return render_template('index.html', data=data,jobs=js)
 
 
 class GetDeatil(MethodView):
