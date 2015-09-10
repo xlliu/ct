@@ -80,13 +80,10 @@ def addJob(item):
     if item.status == '1':
         if not scheduler.get_job(str(item.id)):
             jobs[str(item.id)] = {"cron":item.cron.strip(),"command":item.command}
-            scheduler.add_job(_job(str(item.id)), 'cron', id=str(item.id), **getCron(item.cron))
+            scheduler.add_job(run,kwargs={"id":str(item.id)},trigger = 'cron', id=str(item.id), **getCron(item.cron))
 
         else:
 
-            # print(str(jobs))
-            # print(jobs[str(item.id)].cron)
-            # print(item.cron)
             if (str(item.id) in jobs) and jobs[str(item.id)]["cron"]!=item.cron.strip():
                 jobs[str(item.id)]["cron"]=item.cron.strip()
                 scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
@@ -101,37 +98,37 @@ def addJob(item):
             print 'add updata列队中无此任务，不需要移除2'
 
 
-def _job(id):
-    def run():
-        global jobs
-        print(jobs)
-        stdout = ''
-        stderr = ''
-        begin = CommonUtils.get_unixtime()
-        result = 1
-        item=jobs[id]
-        # 修改任务状态为 开始运行
-        Job.update(lastbegin=begin, lastend=0, lastresult=3).where(Job.id == id).execute()
-        try:
-            reload(sys)
-            sys.setdefaultencoding('utf-8')
-            child = subprocess.Popen(item["command"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            (stdout, stderr) = child.communicate()
-        except :
-            stderr = traceback.format_exc()
 
-        if stderr:
-            result = 2
+def run(id):
+    global jobs
+    print(jobs)
+    stdout = ''
+    stderr = ''
+    begin = CommonUtils.get_unixtime()
+    result = 1
+    item=jobs[id]
+    # 修改任务状态为 开始运行
+    Job.update(lastbegin=begin, lastend=0, lastresult=3).where(Job.id == id).execute()
+    try:
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
+        child = subprocess.Popen(item["command"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (stdout, stderr) = child.communicate()
+    except :
+        stderr = traceback.format_exc()
 
-        end = CommonUtils.get_unixtime()
-        # 修改任务状态为 结束运行
-        Job.update(lastend=end, lastresult=result, runtime=end - begin).where(Job.id == id).execute()
-        # 记录脚本日志
-        Log.create(begin=begin, end=end, job=id,
-                   msg='===============Print==========\n' + stdout + '\n===============Error==========\n\n' + stderr,
-                   result=result)
+    if stderr:
+        result = 2
 
-    return run
+    end = CommonUtils.get_unixtime()
+    # 修改任务状态为 结束运行
+    Job.update(lastend=end, lastresult=result, runtime=end - begin).where(Job.id == id).execute()
+    # 记录脚本日志
+    Log.create(begin=begin, end=end, job=id,
+               msg='===============Print==========\n' + stdout + '\n===============Error==========\n\n' + stderr,
+               result=result)
+
+
 
 
 def getCron(cronstr):
@@ -145,3 +142,12 @@ def getCron(cronstr):
             'month': items[3],
             'day_of_week': items[4]
             }
+
+def getjobs():
+    res=[]
+    for job in scheduler.get_jobs():
+        res.append({
+            "id":job.id,
+            "kwargs":job.kwargs,
+            "time":job.next_run_time.strftime('"%Y-%m-%d %H:%M:%S"')
+        })

@@ -23,7 +23,9 @@ class GetIndex(MethodView):
         js=[]
         for j in scheduler.jobs:
             js.append({"id":j,"cron":scheduler.jobs[j]["cron"],"cmd":scheduler.jobs[j]["command"]})
-        return render_template('index.html', data=data,jobs=js)
+
+
+        return render_template('index.html', data=data,jobs=js,qq=scheduler.getjobs())
 
 
 class GetDeatil(MethodView):

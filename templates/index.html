@@ -9,6 +9,11 @@
                 {% for j in jobs %}
                     {{ j.id }}{{ j.cron }}{{ j.cmd }}
                 {% endfor %}
+                {% for j in qq %}
+                    {{ j.id }}
+                    {{ j.kwargs }}
+                    {{ j.time }}
+                {% endfor %}
             </div>
             <!-- /.row -->
             <div class="row">
