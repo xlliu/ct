@@ -74,11 +74,11 @@ def addJob(item,reschedule=False):
     if item.status == '1':
         if not scheduler.get_job(str(item.id)):
             scheduler.add_job(run,kwargs={"id":str(item.id),"cmd":item.command},trigger = 'cron', id=str(item.id), **getCron(item.cron))
-
-        elif reschedule:
+        else:
+            if reschedule:
                 scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
                 print '已重新定时'
-        scheduler.modify_job(str(item.id),kwargs={"id":str(item.id),"cmd":item.command})
+            scheduler.modify_job(str(item.id),kwargs={"id":str(item.id),"cmd":item.command})
 
     else:
         if scheduler.get_job(str(item.id)):
