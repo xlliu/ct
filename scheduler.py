@@ -1,9 +1,6 @@
-#!flask/bin/python
 #-*- coding: utf-8 -*-
 import sys
 
-reload(sys)
-sys.setdefaultencoding('utf8')
 from apscheduler.events import EVENT_ALL, EVENT_SCHEDULER_START
 from Dal.controltower import Job, Log
 
@@ -25,7 +22,7 @@ scheduler = BackgroundScheduler({
         'max_workers': '20',
     },
     'apscheduler.job_defaults.coalesce': 'false',
-    'apscheduler.job_defaults.max_instances': '10',
+    'apscheduler.job_defaults.max_instances': '1',
 })
 scheduler_runing = False
 
@@ -78,7 +75,7 @@ def addJob(item):
     if item.status == '1':
         if not scheduler.get_job(str(item.id)):
             jobs[str(item.id)] = item
-            scheduler.add_job(_job(item), 'cron', id=str(item.id), **getCron(item.cron))
+            scheduler.add_job(_job(str(item.id)), 'cron', id=str(item.id), **getCron(item.cron))
 
         # if not scheduler.get_job(str(item.id)):
         #     jobs[str(item.id)]=item
@@ -103,19 +100,21 @@ def addJob(item):
             print 'add updata列队中无此任务，不需要移除2'
 
 
-def _job(item):
+def _job(id):
     def run():
         stdout = ''
         stderr = ''
         begin = CommonUtils.get_unixtime()
         result = 1
+        item=jobs[id]
         # 修改任务状态为 开始运行
         Job.update(lastbegin=begin, lastend=0, lastresult=3).where(Job.id == item.id).execute()
         try:
+            reload(sys)
+            sys.setdefaultencoding('utf-8')
             child = subprocess.Popen(item.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = child.communicate()
-
-        except Exception, ex:
+            (stdout, stderr) = child.communicate()
+        except :
             stderr = traceback.format_exc()
 
         if stderr:
