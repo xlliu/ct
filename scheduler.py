@@ -48,7 +48,6 @@ def reStart():
     """
     # 重置scheduler
     if scheduler_runing:
-        print 2
         scheduler.shutdown(wait=False)
     # 重新添加各种job
     dbjobs = Job.select().where(Job.status == 1)
@@ -94,6 +93,7 @@ def addJob(item):
                 scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
             else:
                 print 'add updata列队里已经有此任务，不需要添加'
+
 
 
     else:
