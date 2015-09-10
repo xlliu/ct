@@ -10,7 +10,6 @@ from flask import Flask
 
 from Dac.DataSource import controltower_database, controltower_database_read_1
 import scheduler
-from Common.common_utils import CommonUtils
 app = Flask(__name__)
 
 

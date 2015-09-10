@@ -51,7 +51,6 @@ def reStart():
         scheduler.shutdown(wait=False)
     # 重新添加各种job
     dbjobs = Job.select().where(Job.status == 1)
-    jobs.clear()
     for dbjob in dbjobs:
         addJob(dbjob)
     scheduler.start()
@@ -85,7 +84,15 @@ def addJob(item):
         #     scheduler.add_job(_job(str(item.id)), 'cron',id=str(item.id), **getCron(item.cron))
         else:
             print '已执行更改'
-            scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
+            print(str(jobs))
+            print(jobs[str(item.id)].cron)
+            print(item.cron)
+            if (str(item.id) in jobs) and jobs[str(item.id)].cron.strip()!=item.cron.strip():
+                jobs[str(item.id)]=item
+                scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
+            else:
+                print 'add updata列队里已经有此任务，不需要添加'
+
     else:
         if scheduler.get_job(str(item.id)):
             reMoveJob(item.id)
