@@ -11,9 +11,10 @@ class TaskBase(object):
         s = Job.select().where(Job.name==name,Job.status==status,Job.command==command,Job.cron==cron)
         addJob(s[0])
 
-    def updateTaskRun(self, id):
+    def updateTaskRun(self, id,cron):
         s = Job.select().where(Job.id==id)
-        addJob(s[0])
+
+        addJob(s[0],reschedule=s[0].cron.strip()!=cron.strip())
 
     def delTaskRun(self, id):
         reMoveJob(id)

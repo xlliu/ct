@@ -37,4 +37,4 @@ class TaskDetailDao(TaskBase):
     def update_task(self, id, name, status, command, cron):
         if id:
             Job.update(name=name, status=status, command=command, cron=cron).where(Job.id == id).execute()
-            self.updateTaskRun(id)
+            self.updateTaskRun(id,cron)
