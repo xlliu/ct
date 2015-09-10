@@ -77,7 +77,7 @@ def addJob(item):
     """
     if item.status == '1':
         if not scheduler.get_job(str(item.id)):
-            jobs[str(item.id)] = item.id
+            jobs[str(item.id)] = item
             scheduler.add_job(_job(item), 'cron', id=str(item.id), **getCron(item.cron))
 
         # if not scheduler.get_job(str(item.id)):
@@ -86,7 +86,6 @@ def addJob(item):
         else:
             print '已执行更改'
             scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
-
     else:
         if scheduler.get_job(str(item.id)):
             reMoveJob(item.id)
