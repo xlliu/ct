@@ -22,16 +22,16 @@ from Common.common_utils import CommonUtils
 scheduler = BackgroundScheduler({
     'apscheduler.executors.default': {
         'class': 'apscheduler.executors.pool:ThreadPoolExecutor',
-        'max_workers': '20'
+        'max_workers': '20',
     },
     'apscheduler.job_defaults.coalesce': 'false',
-    'apscheduler.job_defaults.max_instances': '1'
-
+    'apscheduler.job_defaults.max_instances': '10',
 })
 scheduler_runing = False
 
 
 def scheduler_listener(event):
+    global scheduler_runing
     if event.code == EVENT_SCHEDULER_START:
         scheduler_runing = True
 
@@ -48,9 +48,11 @@ def reStart():
     """
     # 重置scheduler
     if scheduler_runing:
+        print 2
         scheduler.shutdown(wait=False)
     # 重新添加各种job
     dbjobs = Job.select().where(Job.status == 1)
+    jobs.clear()
     for dbjob in dbjobs:
         addJob(dbjob)
     scheduler.start()
@@ -83,16 +85,14 @@ def addJob(item):
         #     jobs[str(item.id)]=item
         #     scheduler.add_job(_job(str(item.id)), 'cron',id=str(item.id), **getCron(item.cron))
         else:
-            if str(item.id) in jobs:
-                scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
-            else:
-                print 'add updata列队里已经有此任务，不需要添加'
+            print 1
+            scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
 
     else:
         if scheduler.get_job(str(item.id)):
             reMoveJob(item.id)
         else:
-            print 'add updata列队中无此任务，不需要移除'
+            print 'add updata列队中无此任务，不需要移除2'
 
 
 def _job(item):
