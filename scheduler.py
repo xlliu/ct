@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 import sys
 
-from apscheduler.events import EVENT_ALL, EVENT_SCHEDULER_START
+from apscheduler.events import EVENT_ALL, EVENT_SCHEDULER_START, EVENT_JOB_ERROR
 from Dal.controltower import Job, Log
 
 __author__ = 'zhangjinglei'
@@ -31,6 +31,8 @@ def scheduler_listener(event):
     global scheduler_runing
     if event.code == EVENT_SCHEDULER_START:
         scheduler_runing = True
+    elif event.code == EVENT_JOB_ERROR:
+        event.traceback.format_exc()
 
 
 scheduler.add_listener(scheduler_listener, EVENT_ALL)
