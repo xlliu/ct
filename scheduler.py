@@ -48,7 +48,6 @@ def reStart():
     """
     # 重置scheduler
     if scheduler_runing:
-        print 2
         scheduler.shutdown(wait=False)
     # 重新添加各种job
     dbjobs = Job.select().where(Job.status == 1)
@@ -85,7 +84,7 @@ def addJob(item):
         #     jobs[str(item.id)]=item
         #     scheduler.add_job(_job(str(item.id)), 'cron',id=str(item.id), **getCron(item.cron))
         else:
-            print 1
+            print '已执行更改'
             scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
 
     else:
