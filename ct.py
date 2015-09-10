@@ -36,7 +36,7 @@ def _db_close(exc):
 #########
 def get_server_path():
     return os.path.split(os.path.realpath(__file__))[0]
-logpath = os.path.join(os.path.dirname(get_server_path()), '_corp_platform_logs')
+logpath = os.path.join(os.path.dirname(get_server_path()),'ct', '_corp_platform_logs')
 if not os.path.exists(logpath):
     os.mkdir(logpath)
     fp = open("error.log", 'w')
