@@ -151,3 +151,4 @@ def getjobs():
             "kwargs":job.kwargs,
             "time":job.next_run_time.strftime('"%Y-%m-%d %H:%M:%S"')
         })
+    return res
