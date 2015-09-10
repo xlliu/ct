@@ -21,7 +21,7 @@ class GetIndex(MethodView):
             c = d.cron
             d.nextruntime = CommonUtils.cronToNextTime(c)
 
-        return render_template('index.html', data=data,jobs=js,qq=scheduler.getjobs())
+        return render_template('index.html', data=data,qq=scheduler.getjobs())
 
 
 class GetDeatil(MethodView):
