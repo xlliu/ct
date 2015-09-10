@@ -77,7 +77,7 @@ def addJob(item):
     """
     if item.status == '1':
         if not scheduler.get_job(str(item.id)):
-            jobs[str(item.id)] = item.id
+            jobs[str(item.id)] = item
             scheduler.add_job(_job(item), 'cron', id=str(item.id), **getCron(item.cron))
 
         # if not scheduler.get_job(str(item.id)):
