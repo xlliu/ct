@@ -99,6 +99,7 @@ def addJob(item):
 
 def _job(id):
     def run():
+        print(jobs)
         stdout = ''
         stderr = ''
         begin = CommonUtils.get_unixtime()
