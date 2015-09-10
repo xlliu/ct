@@ -110,6 +110,7 @@ def run(id,cmd):
     # 修改任务状态为 结束运行
     Job.update(lastend=end, lastresult=result, runtime=end - begin).where(Job.id == id).execute()
     # 记录脚本日志
+    print(stderr)
     Log.create(begin=begin, end=end, job=id,
                msg='===============Print==========\n' + stdout + '\n===============Error==========\n\n' + stderr,
                result=result)
