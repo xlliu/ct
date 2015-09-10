@@ -87,7 +87,7 @@ def addJob(item):
             # print(str(jobs))
             # print(jobs[str(item.id)].cron)
             # print(item.cron)
-            if (str(item.id) in jobs) and jobs[str(item.id)].cron.strip()!=item.cron.strip():
+            if (str(item.id) in jobs) and jobs[str(item.id)]["cron"]!=item.cron.strip():
                 jobs[str(item.id)]["cron"]=item.cron.strip()
                 scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
                 print '已重新定时'
