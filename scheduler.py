@@ -43,6 +43,8 @@ def reStart():
     重启整个scheduler
     :return:
     """
+    global jobs
+    jobs={}
     # 重置scheduler
     if scheduler_runing:
         scheduler.shutdown(wait=False)
@@ -59,6 +61,7 @@ def reMoveJob(id):
     :param id:
     :return:
     """
+    global jobs
     if scheduler.get_job(str(id)):
         jobs.pop(str(id), '')
         scheduler.remove_job(str(id))
@@ -71,22 +74,21 @@ def addJob(item):
     :return:
     todo 是否已经存在了
     """
+    global jobs
     if item.status == '1':
         if not scheduler.get_job(str(item.id)):
-            jobs[str(item.id)] = item
+            jobs[str(item.id)] = {"cron":item.cron.strip(),"command":item.command}
             scheduler.add_job(_job(str(item.id)), 'cron', id=str(item.id), **getCron(item.cron))
 
-        # if not scheduler.get_job(str(item.id)):
-        #     jobs[str(item.id)]=item
-        #     scheduler.add_job(_job(str(item.id)), 'cron',id=str(item.id), **getCron(item.cron))
         else:
-            print '已执行更改'
-            print(str(jobs))
-            print(jobs[str(item.id)].cron)
-            print(item.cron)
+
+            # print(str(jobs))
+            # print(jobs[str(item.id)].cron)
+            # print(item.cron)
             if (str(item.id) in jobs) and jobs[str(item.id)].cron.strip()!=item.cron.strip():
-                jobs[str(item.id)]=item
+                jobs[str(item.id)]["cron"]=item.cron.strip()
                 scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
+                print '已重新定时'
             else:
                 print 'add updata列队里已经有此任务，不需要添加'
 
@@ -99,6 +101,7 @@ def addJob(item):
 
 def _job(id):
     def run():
+        global jobs
         print(jobs)
         stdout = ''
         stderr = ''
@@ -106,11 +109,11 @@ def _job(id):
         result = 1
         item=jobs[id]
         # 修改任务状态为 开始运行
-        Job.update(lastbegin=begin, lastend=0, lastresult=3).where(Job.id == item.id).execute()
+        Job.update(lastbegin=begin, lastend=0, lastresult=3).where(Job.id == id).execute()
         try:
             reload(sys)
             sys.setdefaultencoding('utf-8')
-            child = subprocess.Popen(item.command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            child = subprocess.Popen(item["command"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             (stdout, stderr) = child.communicate()
         except :
             stderr = traceback.format_exc()
@@ -120,9 +123,9 @@ def _job(id):
 
         end = CommonUtils.get_unixtime()
         # 修改任务状态为 结束运行
-        Job.update(lastend=end, lastresult=result, runtime=end - begin).where(Job.id == item.id).execute()
+        Job.update(lastend=end, lastresult=result, runtime=end - begin).where(Job.id == id).execute()
         # 记录脚本日志
-        Log.create(begin=begin, end=end, job=item.id,
+        Log.create(begin=begin, end=end, job=id,
                    msg='===============Print==========\n' + stdout + '\n===============Error==========\n\n' + stderr,
                    result=result)
 
