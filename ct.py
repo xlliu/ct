@@ -39,7 +39,7 @@ def get_server_path():
 logpath = os.path.join(os.path.dirname(get_server_path()),'ct', '_corp_platform_logs')
 if not os.path.exists(logpath):
     os.mkdir(logpath)
-    fp = open("error.log", 'w')
+    fp = open(os.path.join(logpath,"error.log"), 'w')
     fp.close()
 errorlogpath = os.path.join(logpath, 'error.log')
 errlogFormat = logging.Formatter(

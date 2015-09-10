@@ -97,16 +97,16 @@ def run(id,cmd):
     with controltower_database.execution_context() as ctx:
         # 修改任务状态为 开始运行
         Job.update(lastbegin=begin, lastend=0, lastresult=3).where(Job.id == id).execute()
-        # try:
-        #     reload(sys)
-        #     sys.setdefaultencoding('utf-8')
-        #     child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #     (stdout, stderr) = child.communicate()
-        # except :
-        #     stderr = traceback.format_exc()
-        #
-        # if stderr:
-        #     result = 2
+        try:
+            reload(sys)
+            sys.setdefaultencoding('utf-8')
+            child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            (stdout, stderr) = child.communicate()
+        except :
+            stderr = traceback.format_exc()
+
+        if stderr:
+            result = 2
 
         end = CommonUtils.get_unixtime()
         # 修改任务状态为 结束运行
