@@ -37,7 +37,6 @@ def scheduler_listener(event):
 
 scheduler.add_listener(scheduler_listener, EVENT_ALL)
 
-jobs = {}
 
 
 def reStart():
@@ -45,8 +44,6 @@ def reStart():
     重启整个scheduler
     :return:
     """
-    global jobs
-    jobs={}
     # 重置scheduler
     if scheduler_runing:
         scheduler.shutdown(wait=False)
@@ -63,33 +60,25 @@ def reMoveJob(id):
     :param id:
     :return:
     """
-    global jobs
     if scheduler.get_job(str(id)):
-        jobs.pop(str(id), '')
         scheduler.remove_job(str(id))
 
 
-def addJob(item):
+def addJob(item,reschedule=False):
     """
     增加/开启job
     :param item:
     :return:
     todo 是否已经存在了
     """
-    global jobs
     if item.status == '1':
         if not scheduler.get_job(str(item.id)):
-            jobs[str(item.id)] = {"cron":item.cron.strip(),"command":item.command}
-            scheduler.add_job(run,kwargs={"id":str(item.id)},trigger = 'cron', id=str(item.id), **getCron(item.cron))
+            scheduler.add_job(run,kwargs={"id":str(item.id),"cmd":item.command},trigger = 'cron', id=str(item.id), **getCron(item.cron))
 
-        else:
-
-            if (str(item.id) in jobs) and jobs[str(item.id)]["cron"]!=item.cron.strip():
-                jobs[str(item.id)]["cron"]=item.cron.strip()
+        elif reschedule:
                 scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
                 print '已重新定时'
-            else:
-                print 'add updata列队里已经有此任务，不需要添加'
+        scheduler.modify_job(str(item.id),kwargs={"id":str(item.id),"cmd":item.command})
 
     else:
         if scheduler.get_job(str(item.id)):
@@ -99,20 +88,17 @@ def addJob(item):
 
 
 
-def run(id):
-    global jobs
-    print(jobs)
+def run(id,cmd):
     stdout = ''
     stderr = ''
     begin = CommonUtils.get_unixtime()
     result = 1
-    item=jobs[id]
     # 修改任务状态为 开始运行
     Job.update(lastbegin=begin, lastend=0, lastresult=3).where(Job.id == id).execute()
     try:
         reload(sys)
         sys.setdefaultencoding('utf-8')
-        child = subprocess.Popen(item["command"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (stdout, stderr) = child.communicate()
     except :
         stderr = traceback.format_exc()

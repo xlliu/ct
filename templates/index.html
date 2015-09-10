@@ -6,9 +6,7 @@
                     <h1 class="page-header">任务列表</h1>
                 </div>
                 <!-- /.col-lg-12 -->
-                {% for j in jobs %}
-                    {{ j.id }}{{ j.cron }}{{ j.cmd }}
-                {% endfor %}
+                
                 {% for j in qq %}
                     {{ j.id }}
                     {{ j.kwargs }}
