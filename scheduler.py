@@ -70,6 +70,9 @@ def addJob(item):
             jobs[str(item.id)]=item
             scheduler.add_job(_job(str(item.id)), 'cron',id=str(item.id), **getCron(item.cron))
         else:
+            print(str(jobs))
+            print(jobs[str(item.id)].cron)
+            print(item.cron)
             if str(item.id) in jobs and jobs[str(item.id)].cron.strip()!=item.cron.strip():
                 jobs[str(item.id)]=item
                 scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
