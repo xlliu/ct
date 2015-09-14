@@ -28,8 +28,8 @@
                             {% for d in data %}
                                 <tr class="odd gradeX">
                                     <td>{{ d.jobresult.name }}</td>
-                                    <td>{{ d.jobresult.status }}</td>
-                                    <td>{{ d.result }}</td>
+                                    <td {% if d.jobresult.status=='开启'%}style='background-color: #279966' {% else %}style='background-color: #ff4c60'{% endif %}>{{ d.jobresult.status }}</td>
+                                    <td {% if d.result=='成功' %}style='background-color: #279966'{% elif d.result=='运行中' %}style='background-color: #eeff94'{% else %}style='background-color: #ff4c60'{% endif %}>{{ d.result }}</td>
                                     <td>{{ d.begin }}</td>
                                     <td>{{ d.end }}</td>
                                     <td><textarea>{{ d.msg }}</textarea></td>
