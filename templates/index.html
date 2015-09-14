@@ -36,8 +36,8 @@
                                     {% for d in data %}
                                         <tr class="odd gradeX">
                                             <td>{{ d.name }}</td>
-                                             <td {% if d.status=='开启'%}style='background-color: #279966' {% else %}style='background-color: #ff4c60'{% endif %}>{{ d.status }}</td>
-                                            <td {% if d.lastresult=='成功' %}style='background-color: #279966'{% elif d.lastresult=='运行中' %}style='background-color: #eeff94'{% else %}style='background-color: #ff4c60'{% endif %}>{{ d.lastresult }}</td>
+                                             <td {% if d.status=='开启'%}style='background-color: #43fab8' {% else %}style='background-color: #fc5d6c'{% endif %}>{{ d.status }}</td>
+                                            <td {% if d.lastresult=='成功' %}style='background-color: #43fab8'{% elif d.lastresult=='运行中' %}style='background-color: #eeff94'{% else %}style='background-color: #fc5d6c'{% endif %}>{{ d.lastresult }}</td>
                                             <td>{{ d.lastbegin }}</td>
                                             <td>{{ d.lastend }}</td>
                                             <td>{{ d.command }}</td>
