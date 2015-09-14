@@ -18,10 +18,9 @@ class GetIndex(MethodView):
     def get(self):
         data = IndexDao().taskList()
         for d in data:
-            c = d.cron
-            d.nextruntime = CommonUtils.cronToNextTime(c)
+            d.nextruntime = scheduler.getjobnexttime(d.id)
 
-        return render_template('index.html', data=data,qq=scheduler.getjobs())
+        return render_template('index.html', data=data)
 
 
 class GetDeatil(MethodView):

@@ -132,12 +132,10 @@ def getCron(cronstr):
             'day_of_week': items[4]
             }
 
-def getjobs():
-    res=[]
-    for job in scheduler.get_jobs():
-        res.append({
-            "id":job.id,
-            "kwargs":job.kwargs,
-            "time":job.next_run_time.strftime('"%Y-%m-%d %H:%M:%S"')
-        })
-    return res
+def getjobnexttime(id):
+    job = scheduler.get_job(str(id))
+    if job:
+
+        return job.next_run_time.strftime('"%Y-%m-%d %H:%M:%S"')
+
+    return '--'
