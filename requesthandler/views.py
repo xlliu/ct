@@ -44,9 +44,14 @@ class GetAddTask(MethodView):
         cronlist.append(request.form.get('cron3'))
         cronlist.append(request.form.get('cron4'))
         cronlist.append(request.form.get('cron5'))
+        phonenum = request.form.get('phonenum', '')
+        email = request.form.get('email', '')
+        errerkey = request.form.get('errerkey', '')
         cron = CommonUtils.cronStr(cronlist)
-        AddTaskDao().addTask(name=name, status=status, command=command, cron=cron)
+        AddTaskDao().addTask(name=name, status=status, command=command, cron=cron,
+                             photonum=phonenum, email=email, errerkey=errerkey)
         return redirect(url_for('/'))
+
 
 class GetTaskDeatil(MethodView):
 
@@ -69,7 +74,11 @@ class GetTaskDeatil(MethodView):
         cronlist.append(request.form.get('cron4'))
         cronlist.append(request.form.get('cron5'))
         cron = CommonUtils.cronStr(cronlist)
-        TaskDetailDao().update_task(id=id, name=name, status=status, command=command, cron=cron )
+        photonum = request.form.get('photonum', '')
+        email = request.form.get('email', '')
+        errorkey = request.form.get('errerkey', '')
+        TaskDetailDao().update_task(id=id, name=name, status=status, command=command, cron=cron,
+                                    photonum=photonum, email=email, errorkey=errorkey)
         return redirect(url_for('/'))
 
 class DeleteTask(MethodView):

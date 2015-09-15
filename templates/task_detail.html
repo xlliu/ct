@@ -47,13 +47,13 @@
                 </div>
             </div>
             <div>
-                <div><label>手机号码<input type="text" class="form-control" id="photonum" name="photonum" style="width: 450px;"></label></div>
+                <label>手机号码<input type="text" class="form-control" id="photonum" name="photonum" style="width: 450px;" value="{{ data[0].photonum }}"></label>
             </div>
             <div>
-                <label>邮箱<input type="text" class="form-control" id="photonum" style="width: 450px"></label>
+                <label>邮箱<input type="text" class="form-control" id="email" name="email" style="width: 450px" value="{{ data[0].email }}"></label>
             </div>
             <div class="form-group">
-                <label>错误关键字<input type="text" class="form-control" id="photonum" style="width: 176px;"></label>
+                <label>错误关键字<input type="text" class="form-control" id="errerkey" name="errerkey" style="width: 176px;" value="{{ data[0].errerkey }}"></label>
             </div>
             <div>
                 <button type="submit" class="btn btn-default" style="float:right;width:100px;height:45px">Update

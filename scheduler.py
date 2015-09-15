@@ -2,6 +2,7 @@
 import sys
 
 from apscheduler.events import EVENT_ALL, EVENT_SCHEDULER_START, EVENT_JOB_ERROR
+from Common.sendmessage import SendMessage
 from Dac.DataSource import controltower_database
 from Dal.controltower import Job, Log
 
@@ -88,8 +89,7 @@ def addJob(item,reschedule=False):
             print 'add updata列队中无此任务，不需要移除2'
 
 
-
-def run(id,cmd):
+def run(id, cmd):
     stdout = ''
     stderr = ''
     begin = CommonUtils.get_unixtime()
@@ -104,8 +104,15 @@ def run(id,cmd):
             (stdout, stderr) = child.communicate()
         except :
             stderr = traceback.format_exc()
-
         if stderr:
+            print 1
+            url = 'http://123.56.40.122:30003/sms/sendsms'
+            content = "优办"
+            SendMessage.sendPhoneMessage(
+                url,
+                {"phone": '13351019032', "content": content},
+                {}
+            )
             result = 2
 
         end = CommonUtils.get_unixtime()
@@ -113,7 +120,7 @@ def run(id,cmd):
         Job.update(lastend=end, lastresult=result, runtime=end - begin).where(Job.id == id).execute()
         # 记录脚本日志
         # print(stderr)
-        Log.create(begin=begin, end=end, job=id,
+        Log.create(begin=begin, end=end, job=item.id,
                    msg='===============Print==========\n' + stdout + '\n===============Error==========\n\n' + stderr,
                    result=result)
 
