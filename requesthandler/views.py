@@ -44,12 +44,12 @@ class GetAddTask(MethodView):
         cronlist.append(request.form.get('cron3'))
         cronlist.append(request.form.get('cron4'))
         cronlist.append(request.form.get('cron5'))
-        phonenum = request.form.get('phonenum', '')
-        email = request.form.get('email', '')
-        errerkey = request.form.get('errerkey', '')
+        phonenum = request.form.get('phonenum', u'')
+        email = request.form.get('email', u'')
+        errerkey = request.form.get('errerkey', u'')
         cron = CommonUtils.cronStr(cronlist)
         AddTaskDao().addTask(name=name, status=status, command=command, cron=cron,
-                             photonum=phonenum, email=email, errerkey=errerkey)
+                             phonenum=phonenum, email=email, errerkey=errerkey)
         return redirect(url_for('/'))
 
 
@@ -74,12 +74,14 @@ class GetTaskDeatil(MethodView):
         cronlist.append(request.form.get('cron4'))
         cronlist.append(request.form.get('cron5'))
         cron = CommonUtils.cronStr(cronlist)
-        photonum = request.form.get('photonum', '')
-        email = request.form.get('email', '')
-        errorkey = request.form.get('errerkey', '')
-        TaskDetailDao().update_task(id=id, name=name, status=status, command=command, cron=cron,
-                                    photonum=photonum, email=email, errorkey=errorkey)
-        return redirect(url_for('/'))
+        phonenum = request.form.get('photonum', u'')
+        email = request.form.get('email', u'')
+        errorkey = request.form.get('errerkey', u'')
+        result = TaskDetailDao().update_task(id=id, name=name, status=status, command=command, cron=cron,
+                                    phonenum=phonenum, email=email, errorkey=errorkey)
+        if result:
+            return redirect(url_for('/'))
+
 
 class DeleteTask(MethodView):
 
@@ -88,11 +90,13 @@ class DeleteTask(MethodView):
         IndexDao().del_task(id)
         return redirect(url_for('/'))
 
+
 class ShowLog(MethodView):
 
     def get(self):
         data = ShowLogDao().showLog(None)
         return render_template('show_log.html', data=data)
+
 
 class GetLog(MethodView):
 

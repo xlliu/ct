@@ -46,7 +46,6 @@ errlogFormat = logging.Formatter(
     '%(process)d %(asctime)s %(levelname)s: %(message)s '
     '[in %(pathname)s:%(lineno)d]'
 )
-import platform
 
 file_handler = RotatingFileHandler(errorlogpath, maxBytes=50000000, backupCount=5)
 file_handler.setFormatter(errlogFormat)
@@ -56,5 +55,5 @@ app.logger.addHandler(file_handler)
 scheduler.reStart()
 
 if __name__ == '__main__':
-    # app.debug=True
+    app.debug=True
     app.run(port=5000)

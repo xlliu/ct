@@ -25,7 +25,7 @@ class TaskDetailDao(TaskBase):
             if r == '2':
                 d.lastresult = '失败'
             if r == '3':
-                d['lastresult'] = '运行中'
+                d.lastresult = '运行中'
             if begin:
                 x = time.localtime(begin)
                 d.lastbegin = time.strftime('%Y-%m-%d %H:%M:%S', x)
@@ -34,11 +34,11 @@ class TaskDetailDao(TaskBase):
                 d.lastend = time.strftime('%Y-%m-%d %H:%M:%S', x)
         return data
 
-    def update_task(self, id, name, status, command, cron, photonum, email, errorkey):
+    def update_task(self, id, name, status, command, cron, phonenum, email, errorkey):
         if id:
             oldcron=Job.get(Job.id==id).cron
             try:
-                Job.update(name=name, status=status, command=command, cron=cron, photonum=photonum, email=email, errorkey=errorkey).where(Job.id == id).execute()
-                self.updateTaskRun(id,oldcron)
+                Job.update(name=name, status=status, command=command, cron=cron, phonenum=phonenum, email=email, errerkey=errorkey).where(Job.id == id).execute()
+                return self.updateTaskRun(id,oldcron)
             except Exception, e:
                 print e

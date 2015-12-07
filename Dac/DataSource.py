@@ -6,8 +6,8 @@ __author__ = 'zhangjinglei'
 from ConfigTool import getConnString
 from peewee import *
 
-controltower = getConnString('DataBase.controltower')
-controltower_database = MySQLDatabase('controltower',
+controltower = getConnString('DataBase.reportdb')
+controltower_database = MySQLDatabase(controltower.dbname,
                                         # max_connections=8,
                                         # stale_timeout=300,
                                         threadlocals=True, **{'host': controltower.host,
@@ -16,8 +16,8 @@ controltower_database = MySQLDatabase('controltower',
                                                               'user': controltower.user,
                                                               'charset': controltower.charset})
 
-controltower_read_1 = getConnString('DataBase.controltower.read.1')
-controltower_database_read_1 = MySQLDatabase('controltower',
+controltower_read_1 = getConnString('DataBase.reportdb.read.1')
+controltower_database_read_1 = MySQLDatabase(controltower.dbname,
                                                # max_connections=8,
                                                # stale_timeout=300,
                                                threadlocals=True, **{'host': controltower_read_1.host,

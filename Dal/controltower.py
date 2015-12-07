@@ -1,19 +1,20 @@
-#!flask/bin/python
 #-*- coding: utf-8 -*-
+
 from Dac.DataSource import controltower_database, controltower_database_read_1
+from peewee import *
 
 __author__ = 'xlliu'
 
 
-from peewee import *
-
 class UnknownField(object):
     pass
+
 
 class BaseModel(Model):
     class Meta:
         database = controltower_database
         read_slaves = (controltower_database_read_1,)
+
 
 class Job(BaseModel):
     command = CharField()
@@ -23,13 +24,14 @@ class Job(BaseModel):
     lastend = IntegerField()
     lastresult = CharField()
     status = CharField()
-    photonum = CharField()
+    phonenum = CharField(db_column='photonum')
     email = CharField()
-    errorkey = CharField()
+    errerkey = CharField(db_column='errorkey')
     runtime = IntegerField()
 
     class Meta:
         db_table = 'job'
+
 
 class Log(BaseModel):
     begin = IntegerField()

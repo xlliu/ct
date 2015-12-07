@@ -1,3 +1,15 @@
-tr td {
+table {
+    table-layout: fixed;
+
+}
+
+td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size:18px;
+}
+
+th {
+    text-align:center;
 }

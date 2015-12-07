@@ -19,8 +19,10 @@ def getConnString(configname):
     result.charset=config.get(configname, 'dbcharset')
     return result
 
+
 def get(section,option):
     return config.get(section,option)
+
 
 class __(object):
     pass

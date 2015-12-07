@@ -1,21 +1,17 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import sys
 
 from apscheduler.events import EVENT_ALL, EVENT_SCHEDULER_START, EVENT_JOB_ERROR
 from Common.sendmessage import SendMessage
 from Dac.DataSource import controltower_database
 from Dal.controltower import Job, Log
-
-__author__ = 'zhangjinglei'
-
 from apscheduler.schedulers.background import BackgroundScheduler
 import subprocess
 import re
 import traceback
 from Common.common_utils import CommonUtils
 
-
-
+__author__ = 'zhangjinglei'
 
 # The "apscheduler." prefix is hard coded
 scheduler = BackgroundScheduler({
@@ -38,7 +34,6 @@ def scheduler_listener(event):
 
 
 scheduler.add_listener(scheduler_listener, EVENT_ALL)
-
 
 
 def reStart():
@@ -66,7 +61,7 @@ def reMoveJob(id):
         scheduler.remove_job(str(id))
 
 
-def addJob(item,reschedule=False):
+def addJob(item, reschedule=False):
     """
     增加/开启job
     :param item:
@@ -75,56 +70,77 @@ def addJob(item,reschedule=False):
     """
     if item.status == '1':
         if not scheduler.get_job(str(item.id)):
-            scheduler.add_job(run,kwargs={"id":str(item.id),"cmd":item.command},trigger = 'cron', id=str(item.id), **getCron(item.cron))
+            reload(sys)
+            sys.setdefaultencoding('utf-8')
+            scheduler.add_job(run, kwargs={"item": item, "cmd": item.command}, trigger='cron', id=str(item.id),
+                              **getCron(item.cron))
         else:
             if reschedule:
                 scheduler.reschedule_job(str(item.id), trigger='cron', **getCron(item.cron))
-                print '已重新定时'
-            scheduler.modify_job(str(item.id),kwargs={"id":str(item.id),"cmd":item.command})
-
+                print u'已重新定时'
+            scheduler.modify_job(str(item.id), kwargs={"item": item, "cmd": item.command})
     else:
         if scheduler.get_job(str(item.id)):
             reMoveJob(item.id)
+            print u'已经从列队中移除任务'
         else:
-            print 'add updata列队中无此任务，不需要移除2'
+            print u'add updata列队中无此任务，不需要移除'
+
+    print scheduler.get_jobs()
+    return 'ok'
 
 
-def run(id, cmd):
-    stdout = ''
-    stderr = ''
+def run(item, cmd):
+    stdout = u''
+    stderr = u''
     begin = CommonUtils.get_unixtime()
     result = 1
     with controltower_database.execution_context() as ctx:
         # 修改任务状态为 开始运行
-        Job.update(lastbegin=begin, lastend=0, lastresult=3).where(Job.id == id).execute()
+        try:
+            Job.update(lastbegin=begin, lastend=0, lastresult=3).where(Job.id == str(item.id)).execute()
+        except Exception, e:
+            print e
         try:
             reload(sys)
             sys.setdefaultencoding('utf-8')
             child = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            (stdout, stderr) = child.communicate()
-        except :
-            stderr = traceback.format_exc()
+            stdout, stderr = child.communicate()
+        except Exception, e:
+            print e
+            stderr += traceback.format_exc()
         if stderr:
-            print 1
-            url = 'http://123.56.40.122:30003/sms/sendsms'
-            content = "优办"
-            SendMessage.sendPhoneMessage(
-                url,
-                {"phone": '13351019032', "content": content},
-                {}
-            )
+            print u'检测到异常'
             result = 2
+            if item.phonenum:
+                url = 'http://123.56.40.122:30003/sms/sendsms'
+                # content = "优办ct测试"
+                content = u"错错错，都是我的错"
+                SendMessage.sendPhoneMessage(
+                        url,
+                        {"phone": '13351019032', "content": content},
+                        {}
+                )
+            elif item.email:
+                SendMessage().sendEmailMessage(
+                        item.email.split(";"),
+                        u'报表监控系统异常',
+                        u'报表监控系统，%s脚本出现运行异常，请尽快关注' % item.name
+                )
 
         end = CommonUtils.get_unixtime()
         # 修改任务状态为 结束运行
-        Job.update(lastend=end, lastresult=result, runtime=end - begin).where(Job.id == id).execute()
+        Job.update(lastend=end, lastresult=result, runtime=end - begin).where(Job.id == str(item.id)).execute()
         # 记录脚本日志
         # print(stderr)
-        Log.create(begin=begin, end=end, job=item.id,
-                   msg='===============Print==========\n' + stdout + '\n===============Error==========\n\n' + stderr,
-                   result=result)
-
-
+        try:
+            print stderr
+            print stdout
+            Log.create(begin=begin, end=end, job=item.id,
+                       msg=u'===============Print==========\n' + stdout + u'\n===============Error==========\n\n' + stderr,
+                       result=result)
+        except Exception, e:
+            print 1111, e
 
 
 def getCron(cronstr):
@@ -139,10 +155,10 @@ def getCron(cronstr):
             'day_of_week': items[4]
             }
 
+
 def getjobnexttime(id):
     job = scheduler.get_job(str(id))
     if job:
-
         return job.next_run_time.strftime('"%Y-%m-%d %H:%M:%S"')
 
     return '--'
