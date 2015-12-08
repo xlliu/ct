@@ -107,7 +107,6 @@ def run(item, cmd):
             stderr += traceback.format_exc()
         if stderr:
             print u'检测到异常,%s' %scheduler.get_jobs()
-            print
             result = 2
             if item.phonenum:
                 url = 'http://123.56.40.122:30003/sms/sendsms'
