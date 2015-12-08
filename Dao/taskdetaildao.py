@@ -1,5 +1,5 @@
 #!flask/bin/python
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import time
 from Dal.controltower import Job
 from Dao.taskbase import TaskBase
@@ -8,7 +8,6 @@ __author__ = 'xlliu'
 
 
 class TaskDetailDao(TaskBase):
-
     def find_one(self, id):
         data = Job.select().where(Job.id == id)
         for d in data:
@@ -34,11 +33,15 @@ class TaskDetailDao(TaskBase):
                 d.lastend = time.strftime('%Y-%m-%d %H:%M:%S', x)
         return data
 
-    def update_task(self, id, name, status, command, cron, phonenum, email, errorkey):
+    def update_task(self, id, name, status, command, cron, phonenum, email, errerkey):
         if id:
-            oldcron=Job.get(Job.id==id).cron
+            update_status = False
+            oldtask = Job.get(Job.id == id)
+            if oldtask.cron != cron:
+                update_status = True
             try:
-                Job.update(name=name, status=status, command=command, cron=cron, phonenum=phonenum, email=email, errerkey=errorkey).where(Job.id == id).execute()
-                return self.updateTaskRun(id,oldcron)
+                Job.update(name=name, status=status, command=command, cron=cron, phonenum=phonenum, email=email,
+                           errerkey=errerkey).where(Job.id == id).execute()
+                return self.updateTaskRun(id, update_status)
             except Exception, e:
                 print e

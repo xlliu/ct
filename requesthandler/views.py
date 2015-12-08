@@ -76,9 +76,9 @@ class GetTaskDeatil(MethodView):
         cron = CommonUtils.cronStr(cronlist)
         phonenum = request.form.get('photonum', u'')
         email = request.form.get('email', u'')
-        errorkey = request.form.get('errerkey', u'')
+        errerkey = request.form.get('errerkey', u'')
         result = TaskDetailDao().update_task(id=id, name=name, status=status, command=command, cron=cron,
-                                    phonenum=phonenum, email=email, errorkey=errorkey)
+                                    phonenum=phonenum, email=email, errerkey=errerkey)
         if result:
             return redirect(url_for('/'))
 

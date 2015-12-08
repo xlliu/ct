@@ -16,9 +16,9 @@ class TaskBase(object):
         except Exception, e:
             print e
 
-    def updateTaskRun(self, id, cron):
+    def updateTaskRun(self, id, update_status):
         s = Job.select().where(Job.id == id)
-        return addJob(s[0], reschedule=s[0].cron.strip() != cron.strip())
+        return addJob(s[0], reschedule=update_status)
 
     def delTaskRun(self, id):
         reMoveJob(id)

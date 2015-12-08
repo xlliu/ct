@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import smtplib
+import urllib
 import urllib2
 from email.mime.text import MIMEText
 
@@ -10,13 +11,13 @@ class SendMessage(object):
 
     @staticmethod
     def sendPhoneMessage(url, data, headers):
+        data = urllib.urlencode(data)
         req = urllib2.Request(url=url, data=data, headers=headers)
         response = urllib2.urlopen(req)
         return response.read()
 
     @staticmethod
     def sendEmailMessage(to_list, sub, content):  # to_list：收件人；sub：主题；content：邮件内容
-
 
         mail_host = "smtp.uban.com"
         mail_user = "liuxuelong@uban.com"

@@ -70,8 +70,6 @@ def addJob(item, reschedule=False):
     """
     if item.status == '1':
         if not scheduler.get_job(str(item.id)):
-            reload(sys)
-            sys.setdefaultencoding('utf-8')
             scheduler.add_job(run, kwargs={"item": item, "cmd": item.command}, trigger='cron', id=str(item.id),
                               **getCron(item.cron))
         else:
@@ -85,8 +83,6 @@ def addJob(item, reschedule=False):
             print u'已经从列队中移除任务'
         else:
             print u'add updata列队中无此任务，不需要移除'
-
-    print scheduler.get_jobs()
     return 'ok'
 
 
@@ -110,12 +106,13 @@ def run(item, cmd):
             print e
             stderr += traceback.format_exc()
         if stderr:
-            print u'检测到异常'
+            print u'检测到异常,%s' %scheduler.get_jobs()
+            print
             result = 2
             if item.phonenum:
                 url = 'http://123.56.40.122:30003/sms/sendsms'
-                # content = "优办ct测试"
-                content = u"错错错，都是我的错"
+                content = "优办ct测试"
+                # content = u"错错错，都是我的错"
                 SendMessage.sendPhoneMessage(
                         url,
                         {"phone": '13351019032', "content": content},
@@ -134,13 +131,13 @@ def run(item, cmd):
         # 记录脚本日志
         # print(stderr)
         try:
-            print stderr
-            print stdout
+            stderr = stderr.decode('gbk').encode('utf-8')
+            stdout = stdout.decode('gbk').encode('utf-8')
             Log.create(begin=begin, end=end, job=item.id,
                        msg=u'===============Print==========\n' + stdout + u'\n===============Error==========\n\n' + stderr,
                        result=result)
         except Exception, e:
-            print 1111, e
+            print e
 
 
 def getCron(cronstr):
